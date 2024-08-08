@@ -82,10 +82,8 @@ fun UserListScreen(
         if (isConnected) {
             if (users.loadState.refresh is LoadState.Error) {
                 users.retry()
-                Log.i("findChanges", "Retrying data load")
             } else {
                 users.refresh()
-                Log.i("findChanges", "Refreshing data")
             }
         }
     }
