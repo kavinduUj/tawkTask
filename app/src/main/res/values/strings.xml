@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GitUser</string>
+    <string name="details">details</string>
+    <string name="userNotFound">User not found</string>
+</resources>
