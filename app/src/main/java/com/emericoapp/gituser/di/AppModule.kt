@@ -27,6 +27,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+
+    // this is Dispatcher provider to limit API call 1 at a time
     @Provides
     @Singleton
     fun provideDispatcher(): Dispatcher {
@@ -35,6 +37,7 @@ object AppModule {
         }
     }
 
+    // this is HttpLoggingInterceptor to see API details
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
@@ -43,6 +46,7 @@ object AppModule {
         }
     }
 
+    // this is OkHttpClient to set dispatcher, and logger
     @Provides
     @Singleton
     fun provideOkHttpClient(dispatcher: Dispatcher,loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
@@ -52,6 +56,7 @@ object AppModule {
             .build()
     }
 
+    // this is the retro instance
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
@@ -62,28 +67,34 @@ object AppModule {
             .build()
     }
 
+    // this is the API service provider for API calls
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
 
+    // app database provider to create database 1st time
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "user_db").build()
 
+    // user Dao class provider
     @Provides
     fun provideUserDao(appDatabase: AppDatabase): UserDao = appDatabase.userDao()
 
+    // userInfo Dao provider
     @Provides
     fun provideUserInfoDao(appDatabase: AppDatabase): UserInfoDao = appDatabase.userInfoDao()
 
+    // UserRepository provider
     @Provides
     @Singleton
     fun provideUserRepository(apiService: ApiService, dao: UserDao): UserRepository =
         UserRepository(apiService, dao)
 
+    //UserInfoRepository provider
     @Provides
     @Singleton
     fun provideInfoRepo (apiService: ApiService, dao: UserInfoDao, users: UserDao): UserInfoRepository = UserInfoRepository(

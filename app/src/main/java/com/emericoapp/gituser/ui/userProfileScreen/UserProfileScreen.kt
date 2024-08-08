@@ -45,25 +45,26 @@ fun UserProfileScreen(
     navController: NavHostController,
     userInfoViewModel: UserInfoViewModel,
 ) {
-    val scrollState = rememberScrollState()
+    val scrollState = rememberScrollState()     // this one helps me to keep remember states of scroll type
     val context = LocalContext.current
     var buttonEnabled by remember {
-        mutableStateOf(false)
+        mutableStateOf(false)       // based on the note edit, i need to enabled and disabled the save button based on this
     }
     var saveNote by remember {
-        mutableStateOf("")
+        mutableStateOf("")      // this is note
     }
     LaunchedEffect(userId) {
-        userInfoViewModel.fetchUserInfo(userId ?: "")
+        userInfoViewModel.fetchUserInfo(userId ?: "")       // here i am observing data when this is Launched
     }
-    var showShimmer by remember { mutableStateOf(true) }
 
+    // this is for Shimmer effect to indicate some loader with animation
+    var showShimmer by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         delay(3000)
         showShimmer = false
     }
 
-    val userInfoState = userInfoViewModel.userInfo.collectAsState()
+    val userInfoState = userInfoViewModel.userInfo.collectAsState()         // then i collect all the data to display on the UI
     if (showShimmer) {
         ProfileShimmer()
     } else {

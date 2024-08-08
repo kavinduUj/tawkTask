@@ -4,7 +4,9 @@ import com.emericoapp.gituser.domain.model.User
 import com.emericoapp.gituser.data.model.UserDto
 import com.emericoapp.gituser.data.model.UserEntity
 
-
+/**
+ * this is mapper class which i have map data for user list before
+ */
 fun UserDto.toEntityModel() = UserEntity(
     id = id,
     login = login,

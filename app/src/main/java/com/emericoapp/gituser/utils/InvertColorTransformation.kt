@@ -8,6 +8,9 @@ import android.graphics.Paint
 import coil.size.Size
 import coil.transform.Transformation
 
+/**
+ *  this is color inverted class for each 4th items
+ */
 class InvertColorTransformation : Transformation {
 
     override val cacheKey: String = "invert_color"

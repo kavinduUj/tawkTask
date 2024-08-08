@@ -6,6 +6,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.emericoapp.gituser.data.model.UserInfoEntity
 
+/**
+ * this is userInfo Dao class which helps to insert userinfo, update note kind of things.
+ */
+
 @Dao
 interface UserInfoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

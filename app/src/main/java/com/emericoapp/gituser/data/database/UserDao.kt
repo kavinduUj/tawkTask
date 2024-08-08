@@ -7,6 +7,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.emericoapp.gituser.data.model.UserEntity
 
+/**
+ * this is user list Dao class which helps to user kind of operations, such as storing userdata, updating, replace,update note etc..
+ */
 @Dao
 interface UserDao {
     @Query("SELECT * FROM users ORDER BY id ASC")

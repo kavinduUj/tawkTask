@@ -61,29 +61,30 @@ fun UserListScreen(
     dataStoreUtil: DataStoreUtil
 ) {
     var query by remember { mutableStateOf("") }
-    val users = viewModel.users.collectAsLazyPagingItems()
-    val searchResults by viewModel.searchResults.collectAsState()
+    val users = viewModel.users.collectAsLazyPagingItems()          // from here i am collecting pagination data
+    val searchResults by viewModel.searchResults.collectAsState()       // from here i am collecting searched user data
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycle = lifecycleOwner.lifecycle
 
-    val networkMonitor = remember { NetworkMonitor(context, lifecycle) }
-    val isConnected by rememberUpdatedState(newValue = networkMonitor.isConnected)
+    val networkMonitor = remember { NetworkMonitor(context, lifecycle) }        // this is the NetworkMonitor instance
+    val isConnected by rememberUpdatedState(newValue = networkMonitor.isConnected)      // using that instance i am update the network states realtime
 
+    // this is for Shimmer effect to indicate some loader with animation
     var showShimmer by remember { mutableStateOf(true) }
-
     LaunchedEffect(Unit) {
         delay(3000)
         showShimmer = false
     }
 
+    // this effect helps me to identify network status changes
     LaunchedEffect(isConnected) {
         if (isConnected) {
             if (users.loadState.refresh is LoadState.Error) {
-                users.retry()
+                users.retry()           // is there are any issue he will re try to grab the data
             } else {
-                users.refresh()
+                users.refresh()         // if not he will refresh the existing list once internet is connected
             }
         }
     }
@@ -97,11 +98,11 @@ fun UserListScreen(
             UserListShimmer()
         } else {
             if (users.itemCount > 0) {
-                DarkThemeScreen(dataStoreUtil = dataStoreUtil, themeViewModel = themeViewModel)
+                DarkThemeScreen(dataStoreUtil = dataStoreUtil, themeViewModel = themeViewModel)         // this is light and dark theme switch
                 SearchBox(onSearch = { newQuery ->
                     query = newQuery
                     viewModel.searchUsers(query)
-                })
+                })          // this is the search box here
                 if (query.isNotEmpty()) {
                     if (searchResults.isEmpty()) {
                         Box(
@@ -123,7 +124,7 @@ fun UserListScreen(
                 } else {
                     Box(modifier = Modifier.fillMaxSize()) {
                         if (users.loadState.refresh is LoadState.Loading) {
-                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))      // this will indicate user list is loading under loading state
                         } else {
                             LazyColumn {
                                 items(users.itemCount) { index ->
@@ -137,6 +138,7 @@ fun UserListScreen(
                                 }
 
                                 if (users.loadState.append is LoadState.Loading) {
+                                    // this is the indicator to indicate loading more at the bottom of the list
                                     item {
                                         CircularProgressIndicator(
                                             modifier = Modifier
@@ -150,6 +152,7 @@ fun UserListScreen(
                     }
                 }
             } else {
+                // if u have no connection and no any local data it will display no data available
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),

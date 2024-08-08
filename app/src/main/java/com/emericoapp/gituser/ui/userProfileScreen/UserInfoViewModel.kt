@@ -1,6 +1,6 @@
 package com.emericoapp.gituser.ui.userProfileScreen
 
-import android.util.Log
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.emericoapp.gituser.data.model.UserInfoEntity
@@ -11,11 +11,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * this is the user info view model class i have used for get information and save note
+ */
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
     private val userInfoRepository: UserInfoRepository
 ) : ViewModel() {
 
+    // from here i had to get userinfo to display as a user data. for that i have user mutable state here.
+    // userInfo holds the "UserInfoEntity" which is fro related to user.
+    // userInfo is the public one to read only access outside from the view model
     private val _userInfo = MutableStateFlow<UserInfoEntity?>(null)
     val userInfo: StateFlow<UserInfoEntity?> = _userInfo
 
@@ -26,6 +32,7 @@ class UserInfoViewModel @Inject constructor(
         }
     }
 
+    // same goes to here
     fun saveUserNote(note: String) {
         _userInfo.value?.let { userInfo ->
             viewModelScope.launch {

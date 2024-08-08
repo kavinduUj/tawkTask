@@ -15,6 +15,9 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 
+/**
+ * this is the real time network monitoring class i have user to idintify network status
+ */
 class NetworkMonitor(context: Context, lifecycle: Lifecycle) : DefaultLifecycleObserver {
 
     private val connectivityManager =
@@ -27,14 +30,14 @@ class NetworkMonitor(context: Context, lifecycle: Lifecycle) : DefaultLifecycleO
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             mainHandler.post {
-                isConnected = true
+                isConnected = true      // from here i will be able to indicate network back
             }
         }
 
         override fun onLost(network: Network) {
             mainHandler.post {
                 isConnected = false
-                Toast.makeText(context, "Connection lost!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Connection lost!", Toast.LENGTH_SHORT).show()      // from here i will be able to indicate network lost
             }
         }
 

@@ -1,6 +1,6 @@
 package com.emericoapp.gituser.utils.shimmerView
 
-import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -35,6 +35,9 @@ import androidx.compose.ui.unit.dp
 import com.emericoapp.gituser.R
 import com.valentinilk.shimmer.shimmer
 
+/**
+ * this is the created shimmer effect for userList. for this i have used some library
+ */
 @Preview(showSystemUi = true)
 @Composable
 fun UserListShimmer(modifier: Modifier = Modifier) {

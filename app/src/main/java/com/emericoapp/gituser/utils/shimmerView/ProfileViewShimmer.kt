@@ -38,6 +38,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.valentinilk.shimmer.shimmer
 
+/**
+ * this is the created shimmer effect for profile. for this i have used some library
+ */
 @Preview (showSystemUi = true)
 @Composable
 fun ProfileShimmer(modifier: Modifier = Modifier) {

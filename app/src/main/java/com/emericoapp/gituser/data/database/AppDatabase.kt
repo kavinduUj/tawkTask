@@ -5,6 +5,9 @@ import androidx.room.RoomDatabase
 import com.emericoapp.gituser.data.model.UserEntity
 import com.emericoapp.gituser.data.model.UserInfoEntity
 
+/**
+ * room db class (to create database and tables)
+ */
 @Database(
     entities = [UserEntity::class, UserInfoEntity::class],
     version = 1

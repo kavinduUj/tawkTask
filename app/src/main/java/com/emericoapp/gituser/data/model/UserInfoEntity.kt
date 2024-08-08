@@ -3,6 +3,9 @@ package com.emericoapp.gituser.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * this is user information entity
+ */
 @Entity(tableName = "userInfo")
 data class UserInfoEntity(
     @PrimaryKey val id: Int,

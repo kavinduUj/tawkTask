@@ -4,6 +4,9 @@ import kotlinx.coroutines.delay
 import android.util.Log
 import java.io.IOException
 
+/**
+ * this is the class for Exponential backoff API call. if some API call get IOException
+ */
 suspend fun <T> retryIO(
     times: Int = Int.MAX_VALUE,
     initialDelay: Long = 100,

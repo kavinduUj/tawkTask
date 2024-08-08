@@ -1,5 +1,9 @@
 package com.emericoapp.gituser.data.model
 
+/**
+ * here is the complete object i am getting as user information.
+ * once i have it, i map these necessary fields to userInfoEntity class using this method (toEntityModel())
+ */
 data class UserInfoDto(
     val avatar_url: String,
     val bio: Any,

@@ -16,14 +16,22 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * this is the user list view model class i have used
+ */
 @HiltViewModel
 class UserListViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
+    // here i have collected the Flow data and map into Domain model class, so after i have use "users" this one to access the data from the UI level
     val users: Flow<PagingData<User>> = userRepository.getPagedUsers()
         .map { pagingData -> pagingData.map { it.toDomainModel() } }
         .cachedIn(viewModelScope)
+
+    // from here i had to get searched user to display as a search result. for that i have user mutable state here.
+    // _searchResults holds the "user" which is searched.
+    // searchResults is the public one to read only access outside from the view model
 
     private val _searchResults = MutableStateFlow<List<User>>(emptyList())
     val searchResults: StateFlow<List<User>> get() = _searchResults

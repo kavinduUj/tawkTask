@@ -12,6 +12,10 @@ import com.emericoapp.gituser.ui.theme.ThemeViewModel
 import com.emericoapp.gituser.utils.DataStoreUtil
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * BONUS Task Completed (Skeletons,Exponential backoff, theme change)
+ */
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var dataStoreUtil: DataStoreUtil
