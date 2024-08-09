@@ -22,11 +22,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -36,6 +38,7 @@ import com.emericoapp.gituser.ui.userProfileScreen.component.Header
 import com.emericoapp.gituser.ui.userProfileScreen.component.Profile
 import com.emericoapp.gituser.ui.userProfileScreen.component.Note
 import com.emericoapp.gituser.utils.Navigate.USER_LIST
+import com.emericoapp.gituser.utils.NetworkMonitor
 import com.emericoapp.gituser.utils.shimmerView.ProfileShimmer
 import kotlinx.coroutines.delay
 
@@ -53,19 +56,26 @@ fun UserProfileScreen(
     var saveNote by remember {
         mutableStateOf("")      // this is note
     }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycle = lifecycleOwner.lifecycle
+    val networkMonitor = remember { NetworkMonitor(context, lifecycle) }
+    val isConnected by rememberUpdatedState(newValue = networkMonitor.isConnected)
+
+    LaunchedEffect(isConnected) {
+        if (isConnected) {
+            userInfoViewModel.fetchUserInfo(userId ?: "")
+        }
+    }
+
     LaunchedEffect(userId) {
         userInfoViewModel.fetchUserInfo(userId ?: "")       // here i am observing data when this is Launched
     }
 
-    // this is for Shimmer effect to indicate some loader with animation
-    var showShimmer by remember { mutableStateOf(true) }
-    LaunchedEffect(Unit) {
-        delay(3000)
-        showShimmer = false
-    }
-
     val userInfoState = userInfoViewModel.userInfo.collectAsState()         // then i collect all the data to display on the UI
-    if (showShimmer) {
+    val isLoading = userInfoState.value == null
+
+    if (isLoading) {
         ProfileShimmer()
     } else {
         if (userInfoState.value == null) {

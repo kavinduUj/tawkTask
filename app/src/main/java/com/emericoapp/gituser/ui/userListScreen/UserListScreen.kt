@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,11 +72,11 @@ fun UserListScreen(
     val networkMonitor = remember { NetworkMonitor(context, lifecycle) }        // this is the NetworkMonitor instance
     val isConnected by rememberUpdatedState(newValue = networkMonitor.isConnected)      // using that instance i am update the network states realtime
 
-    // this is for Shimmer effect to indicate some loader with animation
-    var showShimmer by remember { mutableStateOf(true) }
-    LaunchedEffect(Unit) {
-        delay(3000)
-        showShimmer = false
+    // here i will be able to get time of loading state to show shimmer
+    val isLoading by remember {
+        derivedStateOf {
+            users.loadState.refresh is LoadState.Loading
+        }
     }
 
     // this effect helps me to identify network status changes
@@ -94,7 +95,7 @@ fun UserListScreen(
             .background(MaterialTheme.colorScheme.surface)
             .fillMaxSize()
     ) {
-        if (showShimmer) {
+        if (isLoading) {
             UserListShimmer()
         } else {
             if (users.itemCount > 0) {
@@ -123,45 +124,55 @@ fun UserListScreen(
                     }
                 } else {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        if (users.loadState.refresh is LoadState.Loading) {
-                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))      // this will indicate user list is loading under loading state
-                        } else {
-                            LazyColumn {
-                                items(users.itemCount) { index ->
-                                    val user = users[index]
-                                    user?.let {
-                                        UserItem(user = it, index, selectedUser = { searchedUser ->
-                                            Log.i("viewGitData", "searchedUser: $searchedUser")
-                                            navController.navigate("$USER_PROFILE/$searchedUser")
-                                        })
-                                    }
+                        LazyColumn {
+                            items(users.itemCount) { index ->
+                                val user = users[index]
+                                user?.let {
+                                    UserItem(user = it, index, selectedUser = { searchedUser ->
+                                        Log.i("viewGitData", "searchedUser: $searchedUser")
+                                        navController.navigate("$USER_PROFILE/$searchedUser")
+                                    })
                                 }
+                            }
 
-                                if (users.loadState.append is LoadState.Loading) {
-                                    // this is the indicator to indicate loading more at the bottom of the list
-                                    item {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .padding(16.dp)
-                                                .align(Alignment.Center)
-                                        )
-                                    }
+                            if (users.loadState.append is LoadState.Loading) {
+                                // this is the indicator to indicate loading more at the bottom of the list
+                                item {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier
+                                            .padding(16.dp)
+                                            .align(Alignment.Center)
+                                    )
                                 }
                             }
                         }
                     }
                 }
             } else {
-                // if u have no connection and no any local data it will display no data available
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.user_not),
-                        contentDescription = ""
-                    )
+                if (!isConnected) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.no_connection),
+                            contentDescription = ""
+                        )
+                    }
+                }
+                if (users.itemCount == 0) {
+                    // if u have no connection and no any local data it will display no data available
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.user_not),
+                            contentDescription = ""
+                        )
+                    }
                 }
             }
         }
